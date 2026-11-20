@@ -234,3 +234,27 @@ h1 {
         background: #990000;
     }
 }
+
+
+/* Player health */
+#healthDisplay {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+/* Temporary protection after ghost attack */
+#player.invincible {
+    animation: playerBlink 0.25s infinite alternate;
+}
+
+@keyframes playerBlink {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.3;
+    }
+}

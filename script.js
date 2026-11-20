@@ -13,9 +13,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const key = document.getElementById("key");
     const ghost = document.getElementById("ghost");
     const gameMessage = document.getElementById("gameMessage");
-
+     
     const jumpscare = document.getElementById("jumpscare");
     let jumpscareTimeout = null;
+
+    
+    const healthDisplay = document.getElementById("healthDisplay");
+    let lives = 3;
+    let isInvincible = false;
+    let invincibleTimeout = null;
 
 
     // Game variables
@@ -39,6 +45,13 @@ document.addEventListener("DOMContentLoaded", function () {
         return Math.abs(center1 - center2);
     }
 
+    // Update the player's remaining lives
+    function updateHealth() {
+        healthDisplay.textContent =
+            "Lives: " + "❤️".repeat(lives) +
+            "🖤".repeat(3 - lives);
+    }
+
     // Reset all game settings
     function resetGame() {
 
@@ -59,6 +72,22 @@ document.addEventListener("DOMContentLoaded", function () {
         // Reset game status
         hasKey = false;
         gameFinished = false;
+
+
+        // Restore all three lives
+        lives = 3;
+        isInvincible = false;
+
+        // Cancel temporary protection timer
+        clearTimeout(invincibleTimeout);
+        invincibleTimeout = null;
+
+        // Remove blinking effect
+        player.classList.remove("invincible");
+
+        // Refresh health display
+        updateHealth();
+
 
         player.style.left = playerX + "%";
         ghost.style.left = ghostX + "%";
@@ -183,21 +212,57 @@ function playScarySound() {
 
         ghost.style.left = ghostX + "%";
 
-    // Check ghost collision
-    if (getDistance(ghost, player) < 35) {
 
+// Check if ghost catches player
+if (
+    getDistance(ghost, player) < 35 &&
+    !isInvincible
+) {
+
+    // Lose one life
+    lives--;
+    updateHealth();
+
+    if (lives <= 0) {
+
+        // All lives lost
         gameFinished = true;
         clearInterval(ghostInterval);
 
         gameMessage.textContent =
-            "👻 GAME OVER! The ghost caught you!";
+            "💀 GAME OVER! You lost all three lives!";
 
         gameMessage.classList.remove("game-win");
         gameMessage.classList.add("game-over");
 
         // Trigger scary jumpscare
         showJumpscare();
+
+    } else {
+
+        // Temporary protection
+        isInvincible = true;
+        player.classList.add("invincible");
+
+        gameMessage.textContent =
+            "👻 The ghost attacked! " +
+            lives + " lives remaining!";
+
+        // Move ghost away from player
+        ghostX = 5;
+        ghost.style.left = ghostX + "%";
+
+        // Protection lasts 3 seconds
+        invincibleTimeout = setTimeout(function () {
+
+            isInvincible = false;
+            player.classList.remove("invincible");
+            invincibleTimeout = null;
+
+        }, 3000);
     }
+}
+
 
     }
 
