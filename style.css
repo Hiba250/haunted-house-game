@@ -130,3 +130,30 @@ h1 {
 #door.unlocked {
     filter: drop-shadow(0 0 18px limegreen);
 }
+
+
+/* Ghost enemy */
+#ghost {
+    position: absolute;
+    bottom: 10px;
+    left: 5%;
+    font-size: 50px;
+    transform: translateX(-50%);
+    z-index: 8;
+    filter: drop-shadow(0 0 12px #aaddff);
+    transition: left 0.1s linear;
+}
+
+/* Game over message */
+.game-over {
+    color: red !important;
+    font-size: 25px !important;
+    font-weight: bold;
+}
+
+/* Victory message */
+.game-win {
+    color: limegreen !important;
+    font-size: 25px !important;
+    font-weight: bold;
+}
