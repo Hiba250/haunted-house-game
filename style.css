@@ -108,3 +108,25 @@ h1 {
     transform: translateX(-50%);
     z-index: 10;
 }
+
+#gameMessage {
+    color: #ffcc66;
+    font-size: 20px;
+    margin-top: 15px;
+}
+
+
+/* Golden key */
+#key {
+    position: absolute;
+    bottom: 15px;
+    left: 15%;
+    font-size: 35px;
+    z-index: 5;
+    filter: drop-shadow(0 0 10px gold);
+}
+
+/* Door unlocked effect */
+#door.unlocked {
+    filter: drop-shadow(0 0 18px limegreen);
+}
