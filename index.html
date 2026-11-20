@@ -1,41 +1,65 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>The Haunted House</title>
+
+    <!-- Connect CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+    <!-- WELCOME SCREEN -->
     <div class="game-container" id="welcomeScreen">
 
         <h1>THE HAUNTED HOUSE</h1>
 
         <p class="story">
-            You entered the house...
-            The door closed behind you.
+            You entered the house...<br>
+            The door closed behind you.<br>
             Something is watching you.
         </p>
 
-        <button id="startButton">START GAME</button>
-
-    </div>
-<div class="game-screen" id="gameScreen">
-
-    <h2>YOU ARE INSIDE THE HOUSE</h2>
-
-    <p>Find a way to escape...</p>
-
-    <div class="house">
-
-        <div class="room"></div>
+        <button id="startButton" type="button">
+            START GAME
+        </button>
 
     </div>
 
-</div>
 
+    <!-- GAME SCREEN -->
+    <div class="game-screen" id="gameScreen">
+
+        <h2>YOU ARE INSIDE THE HOUSE</h2>
+
+        <p>Find a way to escape...</p>
+
+        <!-- HAUNTED HOUSE -->
+        <div class="house">
+
+            <!-- ROOM -->
+            <div class="room">
+
+                <!-- PLAYER CHARACTER -->
+                <div id="player">🧍</div>
+
+            </div>
+
+        </div>
+
+        <p>Use ← and → arrow keys to move.</p>
+
+    </div>
+
+
+    <!-- Connect JavaScript -->
     <script src="script.js"></script>
+
 </body>
 </html>

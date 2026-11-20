@@ -1,13 +1,46 @@
-const startButton = document.getElementById("startButton");
 
-const welcomeScreen = document.getElementById("welcomeScreen");
+document.addEventListener("DOMContentLoaded", function () {
 
-const gameScreen = document.getElementById("gameScreen");
+    const startButton = document.getElementById("startButton");
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const player = document.getElementById("player");
+    const room = document.querySelector(".room");
 
-startButton.addEventListener("click", function() {
+    let playerX = 50;
 
-    welcomeScreen.style.display = "none";
+    console.log("Game JavaScript loaded!");
 
-    gameScreen.style.display = "block";
+    // START GAME button
+    startButton.addEventListener("click", function () {
+        console.log("START GAME clicked!");
+
+        welcomeScreen.style.display = "none";
+        gameScreen.style.display = "block";
+
+        playerX = 50;
+        player.style.left = playerX + "%";
+    });
+
+    // Keyboard movement
+    document.addEventListener("keydown", function (event) {
+
+        if (getComputedStyle(gameScreen).display === "none") {
+            return;
+        }
+
+        if (event.key === "ArrowRight") {
+            playerX += 3;
+            event.preventDefault();
+        }
+
+        if (event.key === "ArrowLeft") {
+            playerX -= 3;
+            event.preventDefault();
+        }
+
+        playerX = Math.max(5, Math.min(95, playerX));
+        player.style.left = playerX + "%";
+    });
 
 });
