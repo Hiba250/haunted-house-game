@@ -157,3 +157,80 @@ h1 {
     font-size: 25px !important;
     font-weight: bold;
 }
+
+
+/* Restart Game Button */
+#restartButton {
+    display: none;
+    margin: 20px auto;
+    padding: 12px 25px;
+    background-color: #750000;
+    color: white;
+    border: 2px solid red;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#restartButton:hover {
+    background-color: #b30000;
+    box-shadow: 0 0 15px red;
+}
+
+
+/* Jumpscare fullscreen overlay */
+#jumpscare {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #200000;
+    z-index: 9999;
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    animation: redFlash 0.2s infinite alternate;
+}
+
+/* Giant scary ghost */
+#scaryGhost {
+    font-size: 150px;
+    animation: ghostZoom 0.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 30px red);
+}
+
+/* Jumpscare heading */
+#jumpscare h1 {
+    color: white;
+    font-size: clamp(24px, 6vw, 50px);
+    text-align: center;
+    text-shadow: 0 0 20px red;
+    padding: 15px;
+}
+
+/* Ghost zoom animation */
+@keyframes ghostZoom {
+    from {
+        transform: scale(0.8) rotate(-8deg);
+    }
+
+    to {
+        transform: scale(1.5) rotate(8deg);
+    }
+}
+
+/* Red flashing background */
+@keyframes redFlash {
+    from {
+        background: #180000;
+    }
+
+    to {
+        background: #990000;
+    }
+}

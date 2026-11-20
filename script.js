@@ -1,7 +1,9 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
+    // Get HTML elements
     const startButton = document.getElementById("startButton");
+    const restartButton = document.getElementById("restartButton");
     const welcomeScreen = document.getElementById("welcomeScreen");
     const gameScreen = document.getElementById("gameScreen");
 
@@ -12,13 +14,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const ghost = document.getElementById("ghost");
     const gameMessage = document.getElementById("gameMessage");
 
+    const jumpscare = document.getElementById("jumpscare");
+    let jumpscareTimeout = null;
+
+
+    // Game variables
     let playerX = 50;
     let ghostX = 5;
     let hasKey = false;
     let gameFinished = false;
     let ghostInterval = null;
 
-    // Calculate distance between objects
+    console.log("Haunted House Game loaded!");
+
+    // Calculate horizontal distance between two objects
     function getDistance(element1, element2) {
 
         const rect1 = element1.getBoundingClientRect();
@@ -30,42 +39,142 @@ document.addEventListener("DOMContentLoaded", function () {
         return Math.abs(center1 - center2);
     }
 
-    // Start game
-    startButton.addEventListener("click", function () {
+    // Reset all game settings
+    function resetGame() {
 
-        welcomeScreen.style.display = "none";
-        gameScreen.style.display = "block";
+        // Stop previous ghost movement
+        clearInterval(ghostInterval);
+        
+        // Stop any previous jumpscare timer
+        clearTimeout(jumpscareTimeout);
+        jumpscareTimeout = null;
 
+        // Hide jumpscare when restarting
+        jumpscare.style.display = "none";
+
+        // Reset positions
         playerX = 50;
         ghostX = 5;
+
+        // Reset game status
         hasKey = false;
         gameFinished = false;
 
         player.style.left = playerX + "%";
         ghost.style.left = ghostX + "%";
 
+        // Show golden key
         key.style.display = "block";
+
+        // Lock the door again
         door.classList.remove("unlocked");
 
+        // Reset game message
         gameMessage.classList.remove("game-over", "game-win");
         gameMessage.textContent =
             "Find the key and escape before the ghost catches you!";
 
-        // Stop any previous ghost movement
-        clearInterval(ghostInterval);
+        // Hide restart button
+        restartButton.style.display = "none";
 
         // Start ghost movement
         ghostInterval = setInterval(moveGhost, 150);
+    }
+
+    // Start Game button
+    startButton.addEventListener("click", function () {
+
+        welcomeScreen.style.display = "none";
+        gameScreen.style.display = "block";
+
+        resetGame();
     });
 
-    // Move the ghost toward the player
+    // Restart Game button
+    restartButton.addEventListener("click", function () {
+
+        resetGame();
+    });
+
+    // Move ghost toward the player
+
+
+// Show scary ghost jumpscare
+function showJumpscare() {
+
+    // Display fullscreen ghost
+    jumpscare.style.display = "flex";
+
+    // Play scary sound
+    playScarySound();
+
+    // Hide jumpscare after 2 seconds
+    jumpscareTimeout = setTimeout(function () {
+
+        jumpscare.style.display = "none";
+
+        // Show restart button
+        restartButton.style.display = "block";
+
+    }, 2000);
+}
+
+// Generate scary sound using Web Audio API
+function playScarySound() {
+
+    const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+        return;
+    }
+
+    const audioContext = new AudioContextClass();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.type = "sawtooth";
+
+    oscillator.frequency.setValueAtTime(
+        500,
+        audioContext.currentTime
+    );
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+        80,
+        audioContext.currentTime + 1
+    );
+
+    gainNode.gain.setValueAtTime(
+        0.12,
+        audioContext.currentTime
+    );
+
+    gainNode.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + 1
+    );
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    audioContext.resume().then(function () {
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 1);
+    });
+
+    oscillator.onended = function () {
+        audioContext.close();
+    };
+}
+
     function moveGhost() {
 
         if (gameFinished) {
             return;
         }
 
-        // Ghost follows the player's position
+        // Ghost follows player
         if (ghostX < playerX) {
             ghostX += 0.35;
         } else if (ghostX > playerX) {
@@ -74,22 +183,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
         ghost.style.left = ghostX + "%";
 
-        // Check if ghost catches player
-        if (getDistance(ghost, player) < 35) {
+    // Check ghost collision
+    if (getDistance(ghost, player) < 35) {
 
-            gameFinished = true;
-            clearInterval(ghostInterval);
+        gameFinished = true;
+        clearInterval(ghostInterval);
 
-            gameMessage.textContent =
-                "👻 GAME OVER! The ghost caught you!";
+        gameMessage.textContent =
+            "👻 GAME OVER! The ghost caught you!";
 
-            gameMessage.classList.add("game-over");
-        }
+        gameMessage.classList.remove("game-win");
+        gameMessage.classList.add("game-over");
+
+        // Trigger scary jumpscare
+        showJumpscare();
+    }
+
     }
 
     // Keyboard controls
     document.addEventListener("keydown", function (event) {
 
+        // Stop controls if game is hidden or finished
         if (
             getComputedStyle(gameScreen).display === "none" ||
             gameFinished
@@ -97,13 +212,13 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Move player right
+        // Move right
         if (event.key === "ArrowRight") {
             playerX += 3;
             event.preventDefault();
         }
 
-        // Move player left
+        // Move left
         if (event.key === "ArrowLeft") {
             playerX -= 3;
             event.preventDefault();
@@ -139,11 +254,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Unlock haunted door
+            // Interact with haunted door
             if (getDistance(player, door) < 80) {
 
                 if (hasKey) {
 
+                    // Player wins
                     gameFinished = true;
                     clearInterval(ghostInterval);
 
@@ -152,12 +268,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     gameMessage.textContent =
                         "🎉 YOU ESCAPED THE HAUNTED HOUSE!";
 
+                    gameMessage.classList.remove("game-over");
                     gameMessage.classList.add("game-win");
+
+                    // Show restart button
+                    restartButton.style.display = "block";
 
                 } else {
 
                     gameMessage.textContent =
-                        "🔒 The door is locked! Find the key.";
+                        "🔒 The door is locked! Find the golden key!";
                 }
 
             } else {
